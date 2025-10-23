@@ -2624,7 +2624,7 @@ with section[7]:
         logo_display("https://www.datocms-assets.com/85623/1719638527-intigriti_blog_customer-stories_spotlight_personio_people_power-1.png?auto=format", 90,
                      "Personio", ["🇩🇪 EU focus", "🔑 XML feed", "🧠 ATS analytics connected"])
     with c8:
-        logo_display("https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/adzuna.svg", 100,
+        logo_display("https://automatedanalytics.co/wp-content/uploads/2024/03/jobboard-adzuna.jpg", 100,
                      "Adzuna", ["🇬🇧 Global", "🔑 app_id + app_key", "🧠 Job market API"])
 
     st.divider()
@@ -2793,6 +2793,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
