@@ -2601,30 +2601,30 @@ with section[7]:
     st.markdown("### Integrated Platforms")
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        logo_display("https://www.tacoma.uw.edu/sites/default/files/2023-07/LinkedIn_Logo_0.png", 100, "LinkedIn",
+        logo_display("https://www.tacoma.uw.edu/sites/default/files/2023-07/LinkedIn_Logo_0.png?auto=format", 100, "LinkedIn",
                      ["🌍 Global network", "🔑 Restricted API", "🧠 Integration: Manual Partner"])
     with c2:
-        logo_display("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzM4VuvVEOGDPxMMxlPJl0zTLZzhSMvi5jTQ&s", 100, "Indeed",
+        logo_display("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzM4VuvVEOGDPxMMxlPJl0zTLZzhSMvi5jTQ&s?auto=format", 100, "Indeed",
                      ["🌍 Global reach", "🔑 Public search API", "🧠 Direct data integration"])
     with c3:
-        logo_display("https://www.team4recruiters.nl/wp-content/uploads/2019/02/Monsterboard.png", 100,
+        logo_display("https://www.team4recruiters.nl/wp-content/uploads/2019/02/Monsterboard.png?auto=format", 100,
                      "Monsterboard", ["🌍 Global platform", "🔑 Open RSS Feed", "🧠 Data feed integration"])
     with c4:
-        logo_display("https://www.getnoticed.nl/uploads//Recruitee%20logo.jpg", 100, "Recruitee",
+        logo_display("https://www.getnoticed.nl/uploads//Recruitee%20logo.jpg?auto=format", 100, "Recruitee",
                      ["🇳🇱 Europe / Global", "🔑 Public REST API", "🧠 Full TalentLens sync"])
 
     c5, c6, c7, c8 = st.columns(4)
     with c5:
-        logo_display("https://backoffice.vendr.com/public-assets/logos/1721229995467/greenhouse.png", 100, "Greenhouse",
+        logo_display("https://backoffice.vendr.com/public-assets/logos/1721229995467/greenhouse.png?auto=format", 100, "Greenhouse",
                      ["🌍 US/EU", "🔑 JSON API", "🧠 Predictive mapping enabled"])
     with c6:
-        logo_display("https://www.lever.co/wp-content/uploads/2024/05/LinkedIn-Apply-Connect-2-1.png", 100, "Lever",
+        logo_display("https://www.lever.co/wp-content/uploads/2024/05/LinkedIn-Apply-Connect-2-1.png?auto=format", 100, "Lever",
                      ["🌍 Global", "🔑 REST API", "🧠 TalentLens AI link"])
     with c7:
         logo_display("https://www.datocms-assets.com/85623/1719638527-intigriti_blog_customer-stories_spotlight_personio_people_power-1.png?auto=format", 100,
                      "Personio", ["🇩🇪 EU focus", "🔑 XML feed", "🧠 ATS analytics connected"])
     with c8:
-        logo_display("https://automatedanalytics.co/wp-content/uploads/2024/03/jobboard-adzuna.jpg", 100,
+        logo_display("https://automatedanalytics.co/wp-content/uploads/2024/03/jobboard-adzuna.jpg?auto=format", 100,
                      "Adzuna", ["🇬🇧 Global", "🔑 app_id + app_key", "🧠 Job market API"])
 
     st.divider()
@@ -2793,6 +2793,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
