@@ -284,10 +284,9 @@ if not st.session_state.logged_in:
     st.markdown("## CynthAI© TalentLens Portal")
 
     # --- Authentication Tabs ---
-    tabs = st.tabs(["🔑 Login", "📝 Sign Up", "🔁 Forgot Password"])
+    
 
-    st.markdown("## CynthAI© TalentLens Portal")
-
+  
     tabs = st.tabs(["🔑 Login", "📝 Sign Up", "🔁 Forgot Password"])
 
     # --- LOGIN TAB ---
@@ -2752,6 +2751,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
