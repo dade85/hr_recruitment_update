@@ -329,8 +329,7 @@ if st.session_state.get("logged_in", False):
     with st.sidebar:
         st.success(f"👤 {st.session_state.user_name}")
         st.caption(f"🕒 Logged in: {st.session_state.login_time}")
-        # Use unique key to avoid StreamlitDuplicateElementKey
-        if st.button("🚪 Logout", key="logout_sidebar_btn"):
+        if st.button("🚪 Logout", key="logout_btn"):
             logout_user()
 
     st.title(f"Welcome, {st.session_state.user_name} 👋🏿")
@@ -342,7 +341,6 @@ if st.session_state.get("logged_in", False):
     """)
 
     st.divider()
-
 
 ################################################### Main ##############################################################
 # ===== ✅ UNIFIED STYLE BLOCK SUITE (CYNTHAI© TALENTLENS THEME) =====
@@ -1109,7 +1107,7 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-    # ---------- LANGUAGE SELECTOR ----------
+# ---------- LANGUAGE SELECTOR ----------
 if "lang" not in st.session_state:
     st.session_state.lang = "en"
 
@@ -1120,95 +1118,178 @@ lang = st.selectbox(
     key="lang_selector"  # ✅ unique key to avoid duplicate key errors
 )
 
-    # API key (env + input)
-    env_default = os.getenv("OPENAI_API_KEY", "")
-    default_mask = "••••••••" if env_default else ""
-    user_key = st.text_input(t("api_key", lang), type="password", value=default_mask)
-    openai_key = user_key.strip() if (user_key and "•" not in user_key) else env_default
+# ---------- API KEY (env + input) ----------
+env_default = os.getenv("OPENAI_API_KEY", "")
+default_mask = "••••••••" if env_default else ""
+user_key = st.text_input(t("api_key", lang), type="password", value=default_mask)
+openai_key = user_key.strip() if (user_key and "•" not in user_key) else env_default
 
-    # OCR controls (persisted)
-    st.session_state["ocr_enabled"] = st.checkbox(
-        "Enable OCR for scanned PDFs", value=st.session_state.get("ocr_enabled", False),
-        help="Use for image-only PDFs (requires Tesseract + Poppler)."
-    )
-    st.session_state["ocr_pages"] = st.slider("OCR pages (first N)", 1, 15, st.session_state.get("ocr_pages", 5), 1)
-    st.session_state["poppler_dir"] = st.text_input("Poppler bin path (optional)", value=st.session_state.get("poppler_dir", os.getenv("POPPLER_PATH","")))
-    tess_cmd = st.text_input("Tesseract exe path (optional)", value=os.getenv("TESSERACT_CMD",""))
+# ---------- OCR CONTROLS (persisted) ----------
+st.session_state["ocr_enabled"] = st.checkbox(
+    "Enable OCR for scanned PDFs",
+    value=st.session_state.get("ocr_enabled", False),
+    help="Use for image-only PDFs (requires Tesseract + Poppler)."
+)
+
+st.session_state["ocr_pages"] = st.slider(
+    "OCR pages (first N)",
+    1, 15,
+    st.session_state.get("ocr_pages", 5),
+    1
+)
+
+st.session_state["poppler_dir"] = st.text_input(
+    "Poppler bin path (optional)",
+    value=st.session_state.get("poppler_dir", os.getenv("POPPLER_PATH", ""))
+)
+
+tess_cmd = st.text_input(
+    "Tesseract exe path (optional)",
+    value=os.getenv("TESSERACT_CMD", "")
+)
+
+try:
+    if tess_cmd:
+        pytesseract.pytesseract.tesseract_cmd = tess_cmd
+except Exception:
+    pass
+
+st.caption(f"OCR available: {'Yes' if OCR_AVAILABLE else 'No'}")
+
+# ---------- OCR LANGUAGE SELECTOR ----------
+st.session_state["ocr_lang_label"] = st.selectbox(
+    "OCR language",
+    ["Auto (based on UI language)", "English (eng)", "Dutch (nld)"],
+    index=[
+        "Auto (based on UI language)",
+        "English (eng)",
+        "Dutch (nld)"
+    ].index(st.session_state.get("ocr_lang_label", "Auto (based on UI language)"))
+)
+
+# ---------- OCR DPI ----------
+st.session_state["ocr_dpi"] = st.slider(
+    "OCR DPI",
+    150, 400,
+    st.session_state.get("ocr_dpi", 300),
+    25
+)
+
+# ---------- OCR PSM ----------
+st.session_state["ocr_psm"] = st.selectbox(
+    "Tesseract PSM (page segmentation mode)",
+    [
+        "3 - Fully auto",
+        "4 - Column/variant",
+        "6 - Uniform block",
+        "11 - Sparse text",
+        "12 - Sparse w/ OSD",
+        "13 - Raw line"
+    ],
+    index=[
+        "3 - Fully auto",
+        "4 - Column/variant",
+        "6 - Uniform block",
+        "11 - Sparse text",
+        "12 - Sparse w/ OSD",
+        "13 - Raw line"
+    ].index(st.session_state.get("ocr_psm", "3 - Fully auto"))
+)
+
+st.markdown("---")
+st.caption(t("sample_loaded", lang))
+
+ # ---------- 1) VACANCY AUTO-DETECT (runs BEFORE selectors) ----------
+st.subheader("Vacancy (auto-detect)")
+
+vac_file = st.file_uploader(
+    "Upload Job Vacancy (PDF/DOCX/TXT)",
+    type=["pdf", "docx", "txt"],
+    key="vacancy_file_upl"
+)
+vac_text_paste = st.text_area(
+    "Or paste job vacancy text",
+    height=140,
+    key="vacancy_text_paste"
+)
+
+def _extract_vacancy_text(file):
+    if file is None:
+        return ""
+    name = file.name.lower()
+    if name.endswith(".pdf"):
+        return extract_text_from_pdf(file)
+    if name.endswith(".docx"):
+        return extract_text_from_docx(file)
     try:
-        if tess_cmd:
-            pytesseract.pytesseract.tesseract_cmd = tess_cmd
+        return file.read().decode("utf-8", errors="ignore")
     except Exception:
-        pass
-    st.caption(f"OCR available: {'Yes' if OCR_AVAILABLE else 'No'}")
+        return ""
 
-    st.session_state["ocr_lang_label"] = st.selectbox(
-        "OCR language",
-        ["Auto (based on UI language)", "English (eng)", "Dutch (nld)"],
-        index=["Auto (based on UI language)", "English (eng)", "Dutch (nld)"].index(
-            st.session_state.get("ocr_lang_label","Auto (based on UI language)")
-        )
+def _classify_vacancy_text(vtext: str):
+    if not vtext:
+        return None, None, 0.0
+    all_vacs = []
+    for sec, vacs in SECTORS.items():
+        for v in vacs:
+            sig = " ".join([
+                v["JobTitle"],
+                " ".join(v.get("RequiredSkills", [])),
+                " ".join(v.get("ValueWords", []))
+            ])
+            all_vacs.append({
+                "Sector": sec,
+                "JobTitle": v["JobTitle"],
+                "Text": sig
+            })
+    df_all = pd.DataFrame(all_vacs)
+    tfidf = TfidfVectorizer(stop_words="english")
+    X = tfidf.fit_transform(df_all["Text"])
+    qv = tfidf.transform([vtext])
+    sims = cosine_similarity(qv, X).ravel()
+    best_idx = int(np.argmax(sims))
+    return (
+        df_all.iloc[best_idx]["Sector"],
+        df_all.iloc[best_idx]["JobTitle"],
+        float(sims[best_idx])
     )
-    st.session_state["ocr_dpi"] = st.slider("OCR DPI", 150, 400, st.session_state.get("ocr_dpi", 300), 25)
-    st.session_state["ocr_psm"] = st.selectbox(
-        "Tesseract PSM (page segmentation mode)",
-        ["3 - Fully auto", "4 - Column/variant", "6 - Uniform block", "11 - Sparse text", "12 - Sparse w/ OSD", "13 - Raw line"],
-        index=["3 - Fully auto","4 - Column/variant","6 - Uniform block","11 - Sparse text","12 - Sparse w/ OSD","13 - Raw line"].index(
-            st.session_state.get("ocr_psm","3 - Fully auto")
+
+_vac_text = (
+    _extract_vacancy_text(vac_file)
+    if vac_file is not None
+    else (vac_text_paste.strip() if vac_text_paste else "")
+)
+
+if _vac_text:
+    best_sector, best_role, score = _classify_vacancy_text(_vac_text)
+    if best_sector and best_role:
+        changed = (
+            st.session_state.get("sector", default_sector()) != best_sector or
+            st.session_state.get("vacancy_select") != best_role
         )
-    )
-
-    st.markdown("---"); st.caption(t("sample_loaded", lang))
-
-    # ---------- 1) VACANCY AUTO-DETECT (runs BEFORE selectors) ----------
-    st.subheader("Vacancy (auto-detect)")
-    vac_file = st.file_uploader("Upload Job Vacancy (PDF/DOCX/TXT)", type=["pdf","docx","txt"], key="vacancy_file_upl")
-    vac_text_paste = st.text_area("Or paste job vacancy text", height=140, key="vacancy_text_paste")
-
-    def _extract_vacancy_text(file):
-        if file is None: return ""
-        name = file.name.lower()
-        if name.endswith(".pdf"): return extract_text_from_pdf(file)
-        if name.endswith(".docx"): return extract_text_from_docx(file)
-        try: return file.read().decode("utf-8", errors="ignore")
-        except Exception: return ""
-
-    def _classify_vacancy_text(vtext: str):
-        if not vtext: return None, None, 0.0
-        all_vacs = []
-        for sec, vacs in SECTORS.items():
-            for v in vacs:
-                sig = " ".join([v["JobTitle"], " ".join(v.get("RequiredSkills", [])), " ".join(v.get("ValueWords", []))])
-                all_vacs.append({"Sector": sec, "JobTitle": v["JobTitle"], "Text": sig})
-        df_all = pd.DataFrame(all_vacs)
-        tfidf = TfidfVectorizer(stop_words="english")
-        X = tfidf.fit_transform(df_all["Text"])
-        qv = tfidf.transform([vtext])
-        sims = cosine_similarity(qv, X).ravel()
-        best_idx = int(np.argmax(sims))
-        return df_all.iloc[best_idx]["Sector"], df_all.iloc[best_idx]["JobTitle"], float(sims[best_idx])
-
-    _vac_text = _extract_vacancy_text(vac_file) if vac_file is not None else (vac_text_paste.strip() if vac_text_paste else "")
-    if _vac_text:
-        best_sector, best_role, score = _classify_vacancy_text(_vac_text)
-        if best_sector and best_role:
-            changed = (
-                st.session_state.get("sector", default_sector()) != best_sector or
-                st.session_state.get("vacancy_select") != best_role
+        st.session_state["auto_vac_text"] = _vac_text
+        st.session_state["auto_vac_score"] = score
+        if changed:
+            st.session_state["sector"] = best_sector
+            st.session_state["vacancy_select"] = best_role
+            st.toast(
+                f"Vacancy matched → Sector: {best_sector} · Role: {best_role}",
+                icon="✅"
             )
-            st.session_state["auto_vac_text"] = _vac_text
-            st.session_state["auto_vac_score"] = score
-            if changed:
-                st.session_state["sector"] = best_sector
-                st.session_state["vacancy_select"] = best_role
-                st.toast(f"Vacancy matched → Sector: {best_sector} · Role: {best_role}", icon="✅")
-                st.rerun()
-            else:
-                st.caption(f"Detected sector: {best_sector} · role: {best_role} · similarity {score:.3f}")
+            st.rerun()
         else:
-            st.warning("Could not confidently classify the vacancy. You can still select sector/role manually.")
+            st.caption(
+                f"Detected sector: {best_sector} · role: {best_role} · similarity {score:.3f}"
+            )
     else:
-        st.caption("Upload or paste a vacancy to auto-detect sector and role.")
-    # --------------------------------------------------------------------
+        st.warning(
+            "Could not confidently classify the vacancy. "
+            "You can still select sector/role manually."
+        )
+else:
+    st.caption("Upload or paste a vacancy to auto-detect sector and role.")
+
+# --------------------------------------------------------------------
 
     # ---------- 2) SELECTORS (widget keys are canonical; no manual post-assignments) ----------
     sector_opts = list(SECTORS.keys())
@@ -2253,8 +2334,8 @@ if st.session_state.get("logged_in", False):
     with st.sidebar:
         st.success(f"👤 {st.session_state.user_name}")
         st.caption(f"🕒 Logged in: {st.session_state.login_time}")
-        if st.button("🚪 ", key="_btn"):
-            _user()
+        if st.button("🚪 Logout", key="logout_btn"):
+            logout_user()
 
     st.title(f"Welcome, {st.session_state.user_name} 👋🏿")
     st.markdown("""
@@ -5483,7 +5564,6 @@ with section[8]:
 
         **End of Documentation**
         """)
-
 
 
 
