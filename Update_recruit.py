@@ -2615,13 +2615,13 @@ with section[7]:
 
     c5, c6, c7, c8 = st.columns(4)
     with c5:
-        logo_display("https://upload.wikimedia.org/wikipedia/commons/f/fd/Greenhouse_logo.png", 100, "Greenhouse",
+        logo_display("https://backoffice.vendr.com/public-assets/logos/1721229995467/greenhouse.png", 100, "Greenhouse",
                      ["🌍 US/EU", "🔑 JSON API", "🧠 Predictive mapping enabled"])
     with c6:
         logo_display("https://www.lever.co/wp-content/uploads/2024/05/LinkedIn-Apply-Connect-2-1.png", 100, "Lever",
                      ["🌍 Global", "🔑 REST API", "🧠 TalentLens AI link"])
     with c7:
-        logo_display("https://www.datocms-assets.com/85623/1719638527-intigriti_blog_customer-stories_spotlight_personio_people_power-1.png?auto=format", 90,
+        logo_display("https://www.datocms-assets.com/85623/1719638527-intigriti_blog_customer-stories_spotlight_personio_people_power-1.png?auto=format", 100,
                      "Personio", ["🇩🇪 EU focus", "🔑 XML feed", "🧠 ATS analytics connected"])
     with c8:
         logo_display("https://automatedanalytics.co/wp-content/uploads/2024/03/jobboard-adzuna.jpg", 100,
@@ -2793,6 +2793,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
