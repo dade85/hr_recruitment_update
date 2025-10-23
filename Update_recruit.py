@@ -1083,11 +1083,19 @@ def adjust_with_custom_factors(base_prob: float, feat: dict, weights: dict, blen
 
 # ---------------- Sidebar (incl. NEW vacancy pipeline; safe state) ----------------
 with st.sidebar:
-    logo_path = r"C:\Users\DavidAdewunmi\Downloads\CynthAI_Logo.png"
+    # Always-available GitHub raw logo (works locally & on Streamlit Cloud)
+    logo_url = "https://raw.githubusercontent.com/dade85/hr_recruitment_update/6e159ada1056008ae6fb7ddf27e94361e19f5881/CynthAI_Logo.png"
     try:
-        st.image(logo_path, width=220)
-    except TypeError:
-        st.image(logo_path, width=220)
+        st.image(logo_url, width=220)
+    except Exception:
+        # graceful fallback
+        st.image(
+            "https://upload.wikimedia.org/wikipedia/commons/a/ad/Recruitee_logo.png",
+            width=180,
+        )
+        st.caption("CynthAI© TalentLens")
+
+    st.markdown("### 🧭 Navigation")
 
     # --- Centered Branding Text ---
     st.markdown(
@@ -2751,6 +2759,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
