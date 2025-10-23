@@ -2601,7 +2601,7 @@ with section[7]:
     st.markdown("### Integrated Platforms")
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        logo_display("https://cdn.creazilla.com/icons/3204991/logo-linkedin-icon-sm.png", 100, "LinkedIn",
+        logo_display("https://www.tacoma.uw.edu/sites/default/files/2023-07/LinkedIn_Logo_0.png", 100, "LinkedIn",
                      ["🌍 Global network", "🔑 Restricted API", "🧠 Integration: Manual Partner"])
     with c2:
         logo_display("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzM4VuvVEOGDPxMMxlPJl0zTLZzhSMvi5jTQ&s", 100, "Indeed",
@@ -2793,6 +2793,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
