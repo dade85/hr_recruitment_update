@@ -1121,35 +1121,35 @@ lang = st.selectbox(
 )
 
     # API key (env + input)
-    env_default = os.getenv("OPENAI_API_KEY", "")
-    default_mask = "••••••••" if env_default else ""
-    user_key = st.text_input(t("api_key", lang), type="password", value=default_mask)
-    openai_key = user_key.strip() if (user_key and "•" not in user_key) else env_default
+env_default = os.getenv("OPENAI_API_KEY", "")
+default_mask = "••••••••" if env_default else ""
+user_key = st.text_input(t("api_key", lang), type="password", value=default_mask)
+openai_key = user_key.strip() if (user_key and "•" not in user_key) else env_default
 
     # OCR controls (persisted)
-    st.session_state["ocr_enabled"] = st.checkbox(
-        "Enable OCR for scanned PDFs", value=st.session_state.get("ocr_enabled", False),
-        help="Use for image-only PDFs (requires Tesseract + Poppler)."
+st.session_state["ocr_enabled"] = st.checkbox(
+"Enable OCR for scanned PDFs", value=st.session_state.get("ocr_enabled", False),
+help="Use for image-only PDFs (requires Tesseract + Poppler)."
     )
-    st.session_state["ocr_pages"] = st.slider("OCR pages (first N)", 1, 15, st.session_state.get("ocr_pages", 5), 1)
-    st.session_state["poppler_dir"] = st.text_input("Poppler bin path (optional)", value=st.session_state.get("poppler_dir", os.getenv("POPPLER_PATH","")))
-    tess_cmd = st.text_input("Tesseract exe path (optional)", value=os.getenv("TESSERACT_CMD",""))
-    try:
+st.session_state["ocr_pages"] = st.slider("OCR pages (first N)", 1, 15, st.session_state.get("ocr_pages", 5), 1)
+st.session_state["poppler_dir"] = st.text_input("Poppler bin path (optional)", value=st.session_state.get("poppler_dir", os.getenv("POPPLER_PATH","")))
+tess_cmd = st.text_input("Tesseract exe path (optional)", value=os.getenv("TESSERACT_CMD",""))
+try:
         if tess_cmd:
             pytesseract.pytesseract.tesseract_cmd = tess_cmd
-    except Exception:
+except Exception:
         pass
-    st.caption(f"OCR available: {'Yes' if OCR_AVAILABLE else 'No'}")
+st.caption(f"OCR available: {'Yes' if OCR_AVAILABLE else 'No'}")
 
-    st.session_state["ocr_lang_label"] = st.selectbox(
+st.session_state["ocr_lang_label"] = st.selectbox(
         "OCR language",
         ["Auto (based on UI language)", "English (eng)", "Dutch (nld)"],
         index=["Auto (based on UI language)", "English (eng)", "Dutch (nld)"].index(
             st.session_state.get("ocr_lang_label","Auto (based on UI language)")
         )
     )
-    st.session_state["ocr_dpi"] = st.slider("OCR DPI", 150, 400, st.session_state.get("ocr_dpi", 300), 25)
-    st.session_state["ocr_psm"] = st.selectbox(
+st.session_state["ocr_dpi"] = st.slider("OCR DPI", 150, 400, st.session_state.get("ocr_dpi", 300), 25)
+st.session_state["ocr_psm"] = st.selectbox(
         "Tesseract PSM (page segmentation mode)",
         ["3 - Fully auto", "4 - Column/variant", "6 - Uniform block", "11 - Sparse text", "12 - Sparse w/ OSD", "13 - Raw line"],
         index=["3 - Fully auto","4 - Column/variant","6 - Uniform block","11 - Sparse text","12 - Sparse w/ OSD","13 - Raw line"].index(
@@ -1157,14 +1157,14 @@ lang = st.selectbox(
         )
     )
 
-    st.markdown("---"); st.caption(t("sample_loaded", lang))
+st.markdown("---"); st.caption(t("sample_loaded", lang))
 
     # ---------- 1) VACANCY AUTO-DETECT (runs BEFORE selectors) ----------
-    st.subheader("Vacancy (auto-detect)")
-    vac_file = st.file_uploader("Upload Job Vacancy (PDF/DOCX/TXT)", type=["pdf","docx","txt"], key="vacancy_file_upl")
-    vac_text_paste = st.text_area("Or paste job vacancy text", height=140, key="vacancy_text_paste")
+st.subheader("Vacancy (auto-detect)")
+vac_file = st.file_uploader("Upload Job Vacancy (PDF/DOCX/TXT)", type=["pdf","docx","txt"], key="vacancy_file_upl")
+vac_text_paste = st.text_area("Or paste job vacancy text", height=140, key="vacancy_text_paste")
 
-    def _extract_vacancy_text(file):
+def _extract_vacancy_text(file):
         if file is None: return ""
         name = file.name.lower()
         if name.endswith(".pdf"): return extract_text_from_pdf(file)
@@ -1172,7 +1172,7 @@ lang = st.selectbox(
         try: return file.read().decode("utf-8", errors="ignore")
         except Exception: return ""
 
-    def _classify_vacancy_text(vtext: str):
+def _classify_vacancy_text(vtext: str):
         if not vtext: return None, None, 0.0
         all_vacs = []
         for sec, vacs in SECTORS.items():
@@ -1187,8 +1187,8 @@ lang = st.selectbox(
         best_idx = int(np.argmax(sims))
         return df_all.iloc[best_idx]["Sector"], df_all.iloc[best_idx]["JobTitle"], float(sims[best_idx])
 
-    _vac_text = _extract_vacancy_text(vac_file) if vac_file is not None else (vac_text_paste.strip() if vac_text_paste else "")
-    if _vac_text:
+_vac_text = _extract_vacancy_text(vac_file) if vac_file is not None else (vac_text_paste.strip() if vac_text_paste else "")
+if _vac_text:
         best_sector, best_role, score = _classify_vacancy_text(_vac_text)
         if best_sector and best_role:
             changed = (
@@ -1206,23 +1206,23 @@ lang = st.selectbox(
                 st.caption(f"Detected sector: {best_sector} · role: {best_role} · similarity {score:.3f}")
         else:
             st.warning("Could not confidently classify the vacancy. You can still select sector/role manually.")
-    else:
+else:
         st.caption("Upload or paste a vacancy to auto-detect sector and role.")
     # --------------------------------------------------------------------
 
     # ---------- 2) SELECTORS (widget keys are canonical; no manual post-assignments) ----------
-    sector_opts = list(SECTORS.keys())
-    sector_default = st.session_state.get("sector", default_sector())
-    st.selectbox(
+sector_opts = list(SECTORS.keys())
+sector_default = st.session_state.get("sector", default_sector())
+st.selectbox(
         t("select_sector", lang),
         sector_opts,
         index=sector_opts.index(sector_default) if sector_default in sector_opts else sector_opts.index(default_sector()),
         key="sector"   # widget manages st.session_state["sector"]
     )
 
-    vac_options_for_sidebar = [v["JobTitle"] for v in SECTORS[st.session_state["sector"]]]
-    vac_default = st.session_state.get("vacancy_select", (vac_options_for_sidebar[0] if vac_options_for_sidebar else None))
-    st.selectbox(
+vac_options_for_sidebar = [v["JobTitle"] for v in SECTORS[st.session_state["sector"]]]
+vac_default = st.session_state.get("vacancy_select", (vac_options_for_sidebar[0] if vac_options_for_sidebar else None))
+st.selectbox(
         t("select_vac", lang),
         vac_options_for_sidebar,
         index=vac_options_for_sidebar.index(vac_default) if (vac_default in vac_options_for_sidebar) else 0,
@@ -1230,7 +1230,7 @@ lang = st.selectbox(
     )
 
     # Optional vacancy CSV to swap catalog entries per sector
-    vac_upload = st.file_uploader(t("or_upload_vac", lang), type=["csv"])
+vac_upload = st.file_uploader(t("or_upload_vac", lang), type=["csv"])
 
 def get_current_sector(): return st.session_state.get("sector", default_sector())
 
@@ -2253,8 +2253,8 @@ if st.session_state.get("logged_in", False):
     with st.sidebar:
         st.success(f"👤 {st.session_state.user_name}")
         st.caption(f"🕒 Logged in: {st.session_state.login_time}")
-        if st.button("🚪 ", key="_btn"):
-            _user()
+        if st.button("🚪 Logout", key="logout_btn"):
+            logout_user()
 
     st.title(f"Welcome, {st.session_state.user_name} 👋🏿")
     st.markdown("""
