@@ -1,0 +1,29 @@
+# ===== Core App Framework =====
+streamlit>=1.37.0
+pandas>=2.1.0
+numpy>=1.26.0
+
+# ===== Machine Learning =====
+scikit-learn>=1.3.0
+
+# ===== Visualization =====
+plotly>=5.18.0
+matplotlib>=3.8.0
+
+# ===== Image & File Handling =====
+Pillow>=10.0.0
+requests>=2.31.0
+lxml>=4.9.0  # for XML parsing (Personio/Adzuna)
+
+# ===== Caching & Performance =====
+joblib>=1.3.2
+
+# ===== Optional (for PDF/Text export if used) =====
+fpdf2>=2.7.5
+
+# ===== Optional (for AI integrations if OpenAI API used) =====
+openai>=1.12.0
+tiktoken>=0.6.0
+
+# ===== Encoding & Markdown =====
+markdown-it-py>=3.0.0
