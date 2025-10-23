@@ -329,7 +329,8 @@ if st.session_state.get("logged_in", False):
     with st.sidebar:
         st.success(f"👤 {st.session_state.user_name}")
         st.caption(f"🕒 Logged in: {st.session_state.login_time}")
-        if st.button("🚪 Logout", key="logout_btn"):
+        # Use unique key to avoid StreamlitDuplicateElementKey
+        if st.button("🚪 Logout", key="logout_sidebar_btn"):
             logout_user()
 
     st.title(f"Welcome, {st.session_state.user_name} 👋🏿")
@@ -2244,8 +2245,8 @@ if st.session_state.get("logged_in", False):
     with st.sidebar:
         st.success(f"👤 {st.session_state.user_name}")
         st.caption(f"🕒 Logged in: {st.session_state.login_time}")
-        if st.button("🚪 Logout", key="logout_btn"):
-            logout_user()
+        if st.button("🚪 ", key="_btn"):
+            _user()
 
     st.title(f"Welcome, {st.session_state.user_name} 👋🏿")
     st.markdown("""
@@ -5474,6 +5475,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
