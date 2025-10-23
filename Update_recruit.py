@@ -1739,7 +1739,9 @@ with section[2]:
         
 # ===== ASSESSMENT & INSIGHTS =====
 with section[3]:
-    import base64, os, json, re, datetime, plotly.io as pio, pdfkit
+    import base64, os, json, re, datetime, plotly.io as pio
+    from fpdf import FPDF  # safe PDF generator for Streamlit Cloud
+    import io
     import plotly.graph_objects as go
     import numpy as np
     from openai import OpenAI
@@ -2791,6 +2793,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
