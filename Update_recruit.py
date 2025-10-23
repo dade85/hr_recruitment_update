@@ -2610,7 +2610,7 @@ with section[7]:
         logo_display("https://www.team4recruiters.nl/wp-content/uploads/2019/02/Monsterboard.png", 100,
                      "Monsterboard", ["🌍 Global platform", "🔑 Open RSS Feed", "🧠 Data feed integration"])
     with c4:
-        logo_display("https://upload.wikimedia.org/wikipedia/commons/a/ad/Recruitee_logo.png", 100, "Recruitee",
+        logo_display("https://www.getnoticed.nl/uploads//Recruitee%20logo.jpg", 100, "Recruitee",
                      ["🇳🇱 Europe / Global", "🔑 Public REST API", "🧠 Full TalentLens sync"])
 
     c5, c6, c7, c8 = st.columns(4)
@@ -2793,6 +2793,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
