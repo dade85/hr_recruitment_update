@@ -1887,12 +1887,10 @@ with section[3]:
                 )
             submit = st.form_submit_button(L["submit"][lang])
 
-        # ---------- RADAR ----------
+              # ---------- RADAR ----------
         def build_radar(scores_dict, title="Assessment"):
             cats = ["Motivation", "Joy", "Trust", "AssessmentFit"]
-            vals = [scores_dict.get(c, 0) for c in cats] + [
-                scores_dict.get("Motivation", 0)
-            ]
+            vals = [scores_dict.get(c, 0) for c in cats] + [scores_dict.get("Motivation", 0)]
             fig = go.Figure()
             fig.add_trace(
                 go.Scatterpolar(
@@ -1901,7 +1899,7 @@ with section[3]:
                     fill="toself",
                     name=title,
                     line_color=ACCENT,
-                    fillcolor="rgba(255,215,0,0.3)",
+                    fillcolor="rgba(255,215,0,0.3)",  # gold-tinted fill
                 )
             )
             fig.update_layout(
@@ -1913,6 +1911,7 @@ with section[3]:
                 font_color=TEXT,
             )
             return fig
+
 
         # ---------- EXPORT REPORT ----------
         def export_report(assessment, candidate_name, role="Candidate"):
@@ -1936,12 +1935,15 @@ with section[3]:
             # ✅ Precompute safe HTML version to avoid backslash in f-string
             narrative_html = narrative_text.replace("\n", "<br>")
 
-            # ---------- RADAR IMAGE ----------
-            try:
-                fig = build_radar(assessment["scores"])
-                img_b64 = base64.b64encode(pio.to_image(fig, format="png")).decode()
-            except Exception:
-                img_b64 = ""
+             # ---------- RADAR IMAGE ----------
+                try:
+                    fig = build_radar(last["scores"])
+                    img_b64 = base64.b64encode(pio.to_image(fig, format="png")).decode()
+                except Exception:
+                    img_b64 = ""
+
+                st.markdown("### Export Candidate Report")
+                export_report(last, candidate_name, role=role)
 
             # ---------- LOGO ----------
             logo_path = r"C:\Users\DavidAdewunmi\Downloads\CynthAI_Logo.png"
@@ -2071,41 +2073,32 @@ with section[3]:
                 st.session_state["last_assessment"] = new
                 st.success(f"{L['completed'][lang]} — {assess_fit*100:.1f}%")
 
-        # ---------- VISUALIZE ----------
+         # ---------- VISUALIZE ----------
         if st.session_state.get("last_candidate") == candidate_name:
             last = st.session_state.get("last_assessment", {})
             if last:
-                st.plotly_chart(build_radar(last["scores"]), use_container_width=True)
-                st.markdown("### Export Candidate Report")
-                export_report(last, candidate_name, role=role)
-
+                st.plotly_chart(
+                    build_radar(last["scores"]),
+                    use_container_width=True,
+                    key=f"radar_last_{candidate_name}"
+                )
     # ---------- MANAGE ALL CANDIDATES ----------
-    st.markdown(f"### {L['manage'][lang]}")
-    if st.session_state["candidate_assessments"]:
-        for cname, records in st.session_state["candidate_assessments"].items():
-            with st.expander(f"🧩 {cname} — {len(records)} assessment(s)", expanded=False):
-                for idx, rec in enumerate(records[::-1]):
-                    ts = rec["timestamp"]
-                    fit = rec["scores"]["AssessmentFit"]
-                    st.markdown(f"**{ts}** — Fit: {fit*100:.1f}%")
-                    st.plotly_chart(build_radar(rec["scores"]), use_container_width=True)
-                    c1, c2, c3 = st.columns(3)
-                    with c1:
-                        if st.button("📦 Archive", key=f"arch_{cname}_{idx}"):
-                            st.session_state["archived_assessments"].setdefault(
-                                cname, []
-                            ).append(rec)
-                            st.session_state["candidate_assessments"][cname].remove(rec)
-                            st.success(L["archived"][lang])
-                    with c2:
-                        if st.button("🗑 Delete", key=f"del_{cname}_{idx}"):
-                            st.session_state["candidate_assessments"][cname].remove(rec)
-                            st.warning(L["deleted"][lang])
-                    with c3:
-                        if st.button("📄 Export", key=f"exp_{cname}_{idx}"):
-                            export_report(rec, cname, role="Candidate")
-    else:
-        st.caption("No assessments stored yet — submit one to begin.")
+        st.markdown(f"### {L['manage'][lang]}")
+
+        if st.session_state["candidate_assessments"]:
+            for cname, records in st.session_state["candidate_assessments"].items():
+                with st.expander(f"🧩 {cname} — {len(records)} assessment(s)", expanded=False):
+                    for idx, rec in enumerate(records[::-1]):
+                        ts = rec["timestamp"]
+                        fit = rec["scores"]["AssessmentFit"]
+                        st.markdown(f"**{ts}** — Fit: {fit*100:.1f}%")
+
+                        # Unique key per chart to prevent duplicate element IDs
+                        st.plotly_chart(
+                            build_radar(rec["scores"]),
+                            use_container_width=True,
+                            key=f"radar_{cname}_{idx}"
+                        )
     
    # ===== CUSTOM FACTORS =====
 with section[4]:
@@ -2793,6 +2786,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
