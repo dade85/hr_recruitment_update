@@ -270,17 +270,21 @@ if "logged_in" not in st.session_state:
 if not st.session_state.logged_in:
     st.markdown("<div class='login-container'><div class='login-card'>", unsafe_allow_html=True)
 
-    # --- Local Logo ---
-    logo_path = r"C:\Users\DavidAdewunmi\Downloads\CynthAI_Logo.png"
+    # --- Hosted Logo (always available on Streamlit Cloud) ---
+    logo_url = "https://raw.githubusercontent.com/dade85/hr_recruitment_update/6e159ada1056008ae6fb7ddf27e94361e19f5881/CynthAI_Logo.png"
+
     try:
-        if os.path.exists(logo_path):
-            logo = Image.open(logo_path)
-            st.image(logo, width=200)
-        else:
-            st.image("https://upload.wikimedia.org/wikipedia/commons/a/ad/Recruitee_logo.png", width=180)
-            st.warning("⚠️ Local logo not found. Using fallback.")
+        st.image(logo_url, width=200)
     except Exception as e:
-        st.error(f"Logo load error: {e}")
+        # Secondary fallback (optional placeholder)
+        st.image("https://upload.wikimedia.org/wikipedia/commons/a/ad/Recruitee_logo.png", width=180)
+        st.caption("CynthAI© TalentLens")
+
+    # --- Portal Title ---
+    st.markdown("## CynthAI© TalentLens Portal")
+
+    # --- Authentication Tabs ---
+    tabs = st.tabs(["🔑 Login", "📝 Sign Up", "🔁 Forgot Password"])
 
     st.markdown("## CynthAI© TalentLens Portal")
 
@@ -2748,6 +2752,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
