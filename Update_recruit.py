@@ -1913,7 +1913,7 @@ with section[3]:
             return fig
 
 
-        # ---------- EXPORT REPORT ----------
+               # ---------- EXPORT REPORT ----------
         def export_report(assessment, candidate_name, role="Candidate"):
             import base64, os, datetime, plotly.io as pio
 
@@ -1935,15 +1935,15 @@ with section[3]:
             # ✅ Precompute safe HTML version to avoid backslash in f-string
             narrative_html = narrative_text.replace("\n", "<br>")
 
-             # ---------- RADAR IMAGE ----------
-                try:
-                    fig = build_radar(last["scores"])
-                    img_b64 = base64.b64encode(pio.to_image(fig, format="png")).decode()
-                except Exception:
-                    img_b64 = ""
+            # ---------- RADAR IMAGE ----------
+            try:
+                fig = build_radar(assessment["scores"])
+                img_b64 = base64.b64encode(pio.to_image(fig, format="png")).decode()
+            except Exception:
+                img_b64 = ""
 
-                st.markdown("### Export Candidate Report")
-                export_report(last, candidate_name, role=role)
+            st.markdown("### Export Candidate Report")
+            export_report(last, candidate_name, role=role)
 
             # ---------- LOGO ----------
             logo_path = r"C:\Users\DavidAdewunmi\Downloads\CynthAI_Logo.png"
@@ -1985,7 +1985,6 @@ with section[3]:
             """
 
             # ---------- PDF EXPORT (Streamlit Cloud Safe) ----------
-         # ---------- PDF EXPORT ----------
             try:
                 from fpdf import FPDF
                 import io
@@ -2786,6 +2785,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
