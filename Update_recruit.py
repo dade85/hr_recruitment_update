@@ -1109,16 +1109,16 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-     # ---------- LANGUAGE SELECTOR ----------
-        if "lang" not in st.session_state:
-            st.session_state.lang = "en"
+    # ---------- LANGUAGE SELECTOR ----------
+if "lang" not in st.session_state:
+    st.session_state.lang = "en"
 
-        lang = st.selectbox(
-            t("lang_label", "en"),
-            ["nl", "en"],
-            index=0 if st.session_state.lang == "nl" else 1,
-            key="lang_selector",  # ✅ unique key to avoid duplicate errors
-        )
+lang = st.selectbox(
+    t("lang_label", "en"),
+    ["nl", "en"],
+    index=0 if st.session_state.lang == "nl" else 1,
+    key="lang_selector"  # ✅ unique key to avoid duplicate key errors
+)
 
     # API key (env + input)
     env_default = os.getenv("OPENAI_API_KEY", "")
@@ -5483,6 +5483,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
