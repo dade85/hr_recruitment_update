@@ -1981,54 +1981,62 @@ with section[3]:
             """
 
             # ---------- PDF EXPORT (Streamlit Cloud Safe) ----------
-try:
-    from fpdf import FPDF
-    import io
+         # ---------- PDF EXPORT ----------
+            try:
+                from fpdf import FPDF
+                import io
 
-    pdf = FPDF()
-    pdf.add_page()
+                pdf = FPDF()
+                pdf.add_page()
 
-    # --- Add CynthAI Banner ---
-    pdf.set_fill_color(0, 0, 0)  # black header background
-    pdf.rect(0, 0, 210, 20, "F")
-    pdf.set_text_color(255, 215, 0)  # gold text
-    pdf.set_font("Helvetica", "B", 16)
-    pdf.cell(0, 12, "CynthAI© TalentLens — AI Narrative Report", ln=1, align="C")
-    pdf.ln(10)
+                # --- Add CynthAI Banner ---
+                pdf.set_fill_color(0, 0, 0)  # Black header background
+                pdf.rect(0, 0, 210, 20, "F")
+                pdf.set_text_color(255, 215, 0)  # Gold title text
+                pdf.set_font("Helvetica", "B", 16)
+                pdf.cell(0, 12, "CynthAI© TalentLens — AI Narrative Report", ln=1, align="C")
+                pdf.ln(10)
 
-    # --- Body (Narrative Text) ---
-    pdf.set_text_color(0, 0, 0)
-    pdf.set_font("Helvetica", "", 12)
-    narrative_text = html  # reuse your AI narrative HTML or text variable
-    pdf.multi_cell(0, 8, narrative_text.replace("<br>", "\n").replace("<p>", "").replace("</p>", ""))
+                # --- Body (Narrative Text) ---
+                pdf.set_text_color(0, 0, 0)
+                pdf.set_font("Helvetica", "", 12)
+                narrative_text = html  # reuse your AI narrative or text variable
+                pdf.multi_cell(
+                    0, 8,
+                    narrative_text.replace("<br>", "\n").replace("<p>", "").replace("</p>", "")
+                )
 
-    # --- Footer ---
-    pdf.ln(10)
-    pdf.set_text_color(100, 100, 100)
-    pdf.set_font("Helvetica", "I", 10)
-    pdf.cell(0, 10, "Powered by CynthAI© TalentLens — Crowe Technology", ln=1, align="C")
+                # --- Footer ---
+                pdf.ln(10)
+                pdf.set_text_color(100, 100, 100)
+                pdf.set_font("Helvetica", "I", 10)
+                pdf.cell(
+                    0, 10,
+                    "Powered by CynthAI© TalentLens — Crowe Technology",
+                    ln=1, align="C"
+                )
 
-    # --- Export to bytes and Streamlit Download ---
-    buf = io.BytesIO()
-    pdf.output(buf)
-    buf.seek(0)
+                # --- Export to Bytes and Streamlit Download ---
+                buf = io.BytesIO()
+                pdf.output(buf)
+                buf.seek(0)
 
-    st.download_button(
-        label=f"📄 Download {file_prefix}.pdf",
-        data=buf,
-        file_name=f"{file_prefix}.pdf",
-        mime="application/pdf",
-    )
-    st.success("✅ PDF successfully generated with AI Narrative.")
+                st.download_button(
+                    label=f"📄 Download {file_prefix}.pdf",
+                    data=buf,
+                    file_name=f"{file_prefix}.pdf",
+                    mime="application/pdf",
+                )
+                st.success("✅ PDF successfully generated with AI Narrative.")
 
-except Exception as e:
-    st.warning(f"⚠️ PDF export failed ({e}); fallback to HTML.")
-    html_b64 = base64.b64encode(html.encode()).decode()
-    st.markdown(
-        f'<a href="data:text/html;base64,{html_b64}" download="{file_prefix}.html" '
-        f'style="color:{ACCENT};font-weight:600;">📝 Download HTML</a>',
-        unsafe_allow_html=True,
-    )
+            except Exception as e:
+                st.warning(f"⚠️ PDF export failed ({e}); fallback to HTML.")
+                html_b64 = base64.b64encode(html.encode()).decode()
+                st.markdown(
+                    f'<a href="data:text/html;base64,{html_b64}" download="{file_prefix}.html" '
+                    f'style="color:{ACCENT};font-weight:600;">📝 Download HTML</a>',
+                    unsafe_allow_html=True,
+                )
         # ---------- SUBMIT ----------
         if submit:
             valid = {q: a.strip() for q, a in responses.items() if a.strip()}
@@ -2783,6 +2791,7 @@ with section[8]:
 
         **End of Documentation**
         """)
+
 
 
 
